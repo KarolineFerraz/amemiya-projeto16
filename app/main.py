@@ -1,6 +1,7 @@
-SUPABASE_URL=https://ungsoxiccnjhjbzgwxcg.supabase.com
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3NveGljY25qaGpiemd3eGNnIiwicm9sZSI6ImFub24iLC>
-DATABASE_URL'=postgresql://postgres:K%40h200340@db.ungsoxiccnjhjbzgwxcg.supabase.co:5432/postgres'
+SUPABASE_URL="https://ungsoxiccnjhjbzgwxcg.supabase.com"
+SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3NveGljY25qaGpiemd3eGNnIiwicm9sZSI6ImFub24iLC..."
+DATABASE_URL="postgresql://postgres:K%40h200340@db.ungsoxiccnjhjbzgwxcg.supabase.co:5432/postgres"
+
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import date, timedelta
@@ -51,6 +52,6 @@ def get_alerts():
     alerts = [item for item in data if date.fromisoformat(item["next_calibration_date"]) <= alert_limit]
     return alerts
 
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
 
 
