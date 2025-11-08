@@ -33,6 +33,9 @@ async def calibrate_instrument(
     last_date: str = Form(...),
     file: UploadFile = File(...)
 ):
+
+
+
     filename = f"{tag}_{file.filename}"
     content = await file.read()
     supabase.storage.from_("instrumentos").upload(filename, content)
@@ -56,6 +59,10 @@ def get_alerts():
     data = supabase.table("instruments").select("*").execute().data
     alerts = [item for item in data if date.fromisoformat(item["next_calibration_date"]) <= alert_limit]
     return alerts
+
+@app.get("/")
+def read_root():
+    return {"message": "API funcionando com sucesso!"}
 
 
 from fastapi import FastAPI
