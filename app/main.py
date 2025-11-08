@@ -58,5 +58,31 @@ def get_alerts():
     return alerts
 
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
+
+# Carregar variáveis do .env
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+app = FastAPI()
+
+# Habilitar CORS (acesso de qualquer origem, útil pro frontend)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# 👇 ESTA É A ROTA INICIAL
+@app.get("/")
+def read_root():
+    return {"message": "🚀 API do Sistema de Calibração está funcionando com sucesso!"}
 
 
