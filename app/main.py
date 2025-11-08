@@ -1,6 +1,11 @@
-SUPABASE_URL="https://ungsoxiccnjhjbzgwxcg.supabase.com"
-SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3NveGljY25qaGpiemd3eGNnIiwicm9sZSI6ImFub24iLC..."
-DATABASE_URL="postgresql://postgres:K%40h200340@db.ungsoxiccnjhjbzgwxcg.supabase.co:5432/postgres"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
 
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
