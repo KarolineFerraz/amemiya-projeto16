@@ -1,6 +1,18 @@
+# Python / environment
 venv/
 .env
-__pycache__/
 *.pyc
-uploads/
-static/
+__pycache__/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Node / frontend
+node_modules/
+build/
+dist/
+
+# logs
+*.log

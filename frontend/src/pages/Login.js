@@ -1,5 +1,5 @@
-// src/pages/Login.js
 import { useState } from "react";
+import { api } from "../api";
 
 export default function Login({ setToken, setUsuario }) {
   const [username, setUsername] = useState("");
@@ -9,33 +9,33 @@ export default function Login({ setToken, setUsuario }) {
     e.preventDefault();
 
     try {
-      const resp = await fetch("http://127.0.0.1:8000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      const data = await api.login(username, password);
 
-      const data = await resp.json();
-
-      if (!resp.ok) {
-        alert(data.detail || "Usuário ou senha inválidos");
+      if (!data.token) {
+        alert("Usuário ou senha inválidos");
         return;
       }
 
-      // salva no estado e no localStorage para persistir entre reloads
-      setToken(data.token);
-      setUsuario(data.usuario);
+      // Salva token e usuário
       localStorage.setItem("token", data.token);
       localStorage.setItem("usuario", JSON.stringify(data.usuario));
+
+      setToken(data.token);
+      setUsuario(data.usuario);
+
     } catch (err) {
-      console.error("Falha ao buscar", err);
-      alert("Falha ao conectar com o servidor");
+      console.error(err);
+      alert("Erro ao conectar ao servidor");
     }
   }
 
   return (
-    <div className="login-background" style={{ backgroundImage: "url('/logo.png')" }}>
+    <div className="login-container">
       <div className="login-box">
+
+        {/* Logo */}
+        <img src="/logo.png" alt="Logo" className="login-logo" />
+
         <h2>Sistema de Calibrações</h2>
 
         <form onSubmit={entrar}>
@@ -55,6 +55,7 @@ export default function Login({ setToken, setUsuario }) {
 
           <button type="submit">Entrar</button>
         </form>
+
       </div>
     </div>
   );
