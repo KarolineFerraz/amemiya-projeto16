@@ -6,21 +6,18 @@ from app.instrumentos import router as instrumentos_router
 from app.calibracoes import router as calibracoes_router
 from app.usuarios import router as usuarios_router
 from app.instrumentos_alerta import router as alerta_router
- 
 
 from app.supabase_client import supabase
 
-
 app = FastAPI()
 
-
-# ------------------------------------------------------------------
-# DEBUG SUPABASE (temporário)
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
+# DEBUG SUPABASE
+# ---------------------------------------------------------
 @app.get("/_debug/supabase")
 def debug_supabase():
     """
-    Endpoint de teste — verifica se o Supabase responde dentro do Render.
+    Testa se o Supabase responde corretamente.
     """
     try:
         r = supabase.table("usuarios").select("id").limit(1).execute()
@@ -29,32 +26,29 @@ def debug_supabase():
     except Exception as e:
         return {"ok": False, "error": str(e)[:400]}
 
-
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
 # CORS
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "*"  # enquanto testamos
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
 # ROTAS
-# ------------------------------------------------------------------
+# ---------------------------------------------------------
 app.include_router(auth_router)
 app.include_router(instrumentos_router)
 app.include_router(calibracoes_router)
 app.include_router(usuarios_router)
 app.include_router(alerta_router)
-
 
 @app.get("/")
 def root():
