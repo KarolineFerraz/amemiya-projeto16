@@ -1,23 +1,21 @@
+# app/supabase_client.py
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
-# Carrega o .env na raiz do projeto
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ENV_PATH = os.path.join(BASE_DIR, ".env")
+# tenta carregar .env local (não faz diferença no Render)
 load_dotenv(ENV_PATH)
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-# Verificação clara e sem quebrar o código
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError(
-        f"[ERRO] Falha ao carregar credenciais do Supabase.\n"
-        f"Arquivo .env utilizado: {ENV_PATH}\n"
-        f"SUPABASE_URL: {SUPABASE_URL}\n"
-        f"SUPABASE_KEY começa com: {SUPABASE_KEY[:6] if SUPABASE_KEY else 'NULO'}"
+        "[ERRO] SUPABASE_URL ou SUPABASE_KEY não estão definidas no ambiente. "
+        "Verifique as Environment Variables no Render ou o arquivo .env local."
     )
 
-# Cria o cliente corretamente
+# cria client (vai lançar erro se as credenciais forem inválidas)
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)

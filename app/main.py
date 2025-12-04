@@ -8,7 +8,24 @@ from app.usuarios import router as usuarios_router
 from app.instrumentos_alerta import router as alerta_router
 
 app = FastAPI()
+# adicionar logo após app = FastAPI() no app/main.py
 
+from fastapi import FastAPI
+# ... (se já importou FastAPI e criou app, apenas adicione abaixo)
+@app.get("/_debug/supabase")
+def debug_supabase():
+    """
+    Endp temporário: checa se o supabase client consegue executar uma consulta simples.
+    NÃO EXIBE CHAVES. Remova quando resolver.
+    """
+    try:
+        r = supabase.table("usuarios").select("id").limit(1).execute()
+        # r.data pode ser None ou lista
+        rows = len(r.data or [])
+        return {"ok": True, "rows": rows}
+    except Exception as e:
+        # retorna somente os primeiros 400 chars do erro
+        return {"ok": False, "error": str(e)[:400]}
 # CORS
 app.add_middleware(
     CORSMiddleware,
