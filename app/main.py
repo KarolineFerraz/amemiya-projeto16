@@ -7,44 +7,51 @@ from app.calibracoes import router as calibracoes_router
 from app.usuarios import router as usuarios_router
 from app.instrumentos_alerta import router as alerta_router
 
-app = FastAPI()
-# adicionar logo após app = FastAPI() no app/main.py
+from app.supabase_client import supabase  # <-- FALTAVA ISSO!!
 
-from fastapi import FastAPI
-# ... (se já importou FastAPI e criou app, apenas adicione abaixo)
+app = FastAPI()
+
+# ---------------------------------------------
+# DEBUG DO SUPABASE (usar só para testar no Render)
+# ---------------------------------------------
 @app.get("/_debug/supabase")
 def debug_supabase():
     """
-    Endp temporário: checa se o supabase client consegue executar uma consulta simples.
-    NÃO EXIBE CHAVES. Remova quando resolver.
+    Teste simples p/ saber se o Supabase está respondendo no Render.
+    NÃO EXIBE CHAVES!
     """
     try:
         r = supabase.table("usuarios").select("id").limit(1).execute()
-        # r.data pode ser None ou lista
-        rows = len(r.data or [])
-        return {"ok": True, "rows": rows}
+        return {
+            "ok": True,
+            "rows": len(r.data or []),
+        }
     except Exception as e:
-        # retorna somente os primeiros 400 chars do erro
         return {"ok": False, "error": str(e)[:400]}
-# CORS
+
+
+# ---------------------------------------------
+# CONFIGURAÇÃO DE CORS
+# ---------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "*"
+        "*",  # deixe assim até funcionar no Render
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ---------------------------------------------
 # ROTAS
+# ---------------------------------------------
 app.include_router(auth_router)
 app.include_router(instrumentos_router)
 app.include_router(calibracoes_router)
 app.include_router(usuarios_router)
 app.include_router(alerta_router)
+
 
 @app.get("/")
 def root():
