@@ -1,5 +1,9 @@
 // src/api.js
-const BASE = "http://127.0.0.1:8000"; // ou "https://amemiya-backend-karol.onrender.com"
+
+// Usa variável de ambiente no Render OU localhost em desenvolvimento
+const BASE =
+  process.env.REACT_APP_API_BASE_URL ||
+  "http://127.0.0.1:8000";
 
 async function request(path, options = {}) {
   const res = await fetch(BASE + path, options);
@@ -59,10 +63,9 @@ export const api = {
   },
 
   async registrarCalibracao(token, formData) {
-    // Não definir Content-Type quando mandar FormData
     return request("/calibracoes/registrar", {
       method: "POST",
-      headers: { Authorization: "Bearer " + token },
+      headers: { Authorization: "Bearer " + token }, // NÃO coloca Content-Type
       body: formData,
     });
   },

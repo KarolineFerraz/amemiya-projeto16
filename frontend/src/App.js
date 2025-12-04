@@ -19,9 +19,7 @@ function App() {
 
   const [alertasTotal, setAlertasTotal] = useState(0);
 
-  // -------------------------------------
-  // Atualiza quantidade de alertas no menu
-  // -------------------------------------
+  // Atualiza quantidade de alertas
   useEffect(() => {
     async function carregarAlertas() {
       if (!token) return;
@@ -44,51 +42,48 @@ function App() {
     carregarAlertas();
   }, [token]);
 
-  // -------------------------------------
-  // Logout
-  // -------------------------------------
   function sair() {
     setToken("");
     setUsuario({});
     setAlertasTotal(0);
+
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
   }
 
   return (
     <BrowserRouter>
-      {/* -------------------- NAVBAR -------------------- */}
+      {/* NAVBAR */}
       <nav className="navbar">
 
         {!token && <Link to="/">Login</Link>}
 
-        {token && <Link to="/listar">Calibrações</Link>}
-        {token && <Link to="/registrar">Secretário</Link>}
-        {token && <Link to="/instrumentos">Instrumentos</Link>}
-
-        {/* BOTÃO DE ALERTAS */}
         {token && (
-          <Link to="/alertas" className="alerta-menu-btn">
-            ⚠️ Alertas
-            {alertasTotal > 0 && (
-              <span className="badge-alert">{alertasTotal}</span>
+          <>
+            <Link to="/listar">Calibrações</Link>
+            <Link to="/registrar-calibracao" >Registrar Calibração
+            </Link>
+            <Link to="/instrumentos">Instrumentos</Link>
+
+            <Link to="/alertas" className="alerta-menu-btn">
+              ⚠️ Alertas
+              {alertasTotal > 0 && (
+                <span className="badge-alert">{alertasTotal}</span>
+              )}
+            </Link>
+
+            {usuario.role === "gerente" && (
+              <Link to="/usuarios">Usuários</Link>
             )}
-          </Link>
-        )}
 
-        {/* Somente gerente vê usuários */}
-        {token && usuario.role === "gerente" && (
-          <Link to="/usuarios">Usuários</Link>
-        )}
-
-        {token && (
-          <button className="logout-btn" onClick={sair}>
-            Sair
-          </button>
+            <button className="logout-btn" onClick={sair}>
+              Sair
+            </button>
+          </>
         )}
       </nav>
 
-      {/* -------------------- ROTAS -------------------- */}
+      {/* ROTAS */}
       <div className="container">
         <Routes>
           <Route
@@ -99,7 +94,7 @@ function App() {
           <Route path="/listar" element={<ListarCalibracoes token={token} />} />
 
           <Route
-            path="/registrar"
+            path="/registrar-calibracao"
             element={<RegistrarCalibracao token={token} />}
           />
 
@@ -125,5 +120,15 @@ function App() {
     </BrowserRouter>
   );
 }
+
+const styles = {
+  button: {
+    padding: "6px 12px",
+    background: "#0066ff",
+    color: "white",
+    borderRadius: "6px",
+    textDecoration: "none",
+  },
+};
 
 export default App;
