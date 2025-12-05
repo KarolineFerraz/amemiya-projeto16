@@ -16,7 +16,6 @@ def listar_calibracoes(user=Depends(verify_token)):
     r = supabase.table("calibracoes").select("*").order("created_at", desc=True).execute()
     return {"calibracoes": r.data or []}
 
-
 # ---------------------------------------------------------
 # REGISTRAR CALIBRAÇÃO
 # ---------------------------------------------------------
@@ -29,23 +28,27 @@ async def registrar_calibracao(
 ):
     url_imagem = None
 
-    # ---------- SALVAR IMAGEM ----------
+    # -----------------------------------------
+    # SE HOUVER UPLOAD DE IMAGEM
+    # -----------------------------------------
     if imagem:
         ext = imagem.filename.split(".")[-1]
         nome_arquivo = f"{uuid.uuid4()}.{ext}"
 
-        caminho = os.path.join("static", nome_arquivo)
+        # garante que a pasta static exista
+        os.makedirs("static", exist_ok=True)
 
-        os.makedirs(os.path.dirname(caminho), exist_ok=True)
+        caminho = os.path.join("static", nome_arquivo)
 
         with open(caminho, "wb") as f:
             f.write(await imagem.read())
 
-        # URL PÚBLICA DO RENDER (🚨 MUITO IMPORTANTE!)
-        BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8000")
-        url_imagem = f"{BASE_URL}/static/{nome_arquivo}"
+        # URL pública no Render
+        url_imagem = f"https://amemiya-backend-karol.onrender.com/static/{nome_arquivo}"
 
-    # ---------- SALVAR NO SUPABASE ----------
+    # -----------------------------------------
+    # REGISTRO NO SUPABASE
+    # -----------------------------------------
     calib = {
         "instrumento_id": instrumento_id,
         "usuario_id": user["id"],
@@ -56,4 +59,4 @@ async def registrar_calibracao(
 
     supabase.table("calibracoes").insert(calib).execute()
 
-    return {"status": "ok", "imagem_url": url_imagem}
+    return {"status": "ok"}

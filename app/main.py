@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.auth import router as auth_router
 from app.instrumentos import router as instrumentos_router
@@ -12,13 +13,15 @@ from app.supabase_client import supabase
 app = FastAPI()
 
 # ---------------------------------------------------------
+# SERVIR ARQUIVOS ESTÁTICOS (/static)
+# ---------------------------------------------------------
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# ---------------------------------------------------------
 # DEBUG SUPABASE
 # ---------------------------------------------------------
 @app.get("/_debug/supabase")
 def debug_supabase():
-    """
-    Testa se o Supabase responde corretamente.
-    """
     try:
         r = supabase.table("usuarios").select("id").limit(1).execute()
         rows = len(r.data or [])
@@ -34,8 +37,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-	"https://amemiya-projeto-autogest.onrender.com",
-   "*"
+        "https://amemiya-projeto-autogest.onrender.com",
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
