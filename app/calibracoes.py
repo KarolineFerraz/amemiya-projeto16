@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Depends
+from fastapi import APIRouter, File, UploadFile, Form, Depends
 from datetime import datetime
 from app.supabase_client import supabase
 from app.auth import verify_token
@@ -8,7 +8,7 @@ from typing import Optional
 router = APIRouter(prefix="/calibracoes", tags=["Calibracoes"])
 
 # ---------------------------------------------------------
-# LISTAR
+# LISTAR CALIBRAÇÕES
 # ---------------------------------------------------------
 @router.get("/listar")
 def listar_calibracoes(user=Depends(verify_token)):
@@ -16,7 +16,7 @@ def listar_calibracoes(user=Depends(verify_token)):
     return {"calibracoes": r.data or []}
 
 # ---------------------------------------------------------
-# REGISTRAR
+# REGISTRAR CALIBRAÇÃO (UPLOAD NO SUPABASE STORAGE)
 # ---------------------------------------------------------
 @router.post("/registrar")
 async def registrar_calibracao(
@@ -34,22 +34,21 @@ async def registrar_calibracao(
         ext = imagem.filename.split(".")[-1].lower()
         nome_arquivo = f"{uuid.uuid4()}.{ext}"
 
-        bucket = "calibracoes_imgs"  # <-- nome do bucket público correto
+        bucket = "calibracoes_imgs"  # <-- CONFIRA SE ESTE É O NOME DO SEU BUCKET
 
-        # Envia para o Supabase Storage
         file_bytes = await imagem.read()
 
-        supabase.storage.from_(bucket).upload(
-            file=f"{nome_arquivo}",
+        upload_response = supabase.storage.from_(bucket).upload(
+            path=nome_arquivo,
             file=file_bytes,
             file_options={"content-type": imagem.content_type}
         )
 
-        # Gera URL pública
+        # URL pública
         url_imagem = supabase.storage.from_(bucket).get_public_url(nome_arquivo)
 
     # ---------------------------------------------------------
-    # SALVAR NO BANCO
+    # REGISTRO NO SUPABASE DATABASE
     # ---------------------------------------------------------
     registro = {
         "instrumento_id": instrumento_id,
@@ -60,4 +59,5 @@ async def registrar_calibracao(
     }
 
     supabase.table("calibracoes").insert(registro).execute()
+
     return {"status": "ok"}
