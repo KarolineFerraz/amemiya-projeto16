@@ -1,9 +1,9 @@
 // src/api.js
 
-// Usa variável de ambiente no Render OU localhost em desenvolvimento
+// Usa variável de ambiente no Render OU backend em produção
 const BASE =
   process.env.REACT_APP_API_BASE_URL ||
-  "http://127.0.0.1:8000";
+  "https://amemiya-backend-karol.onrender.com";
 
 async function request(path, options = {}) {
   const res = await fetch(BASE + path, options);
