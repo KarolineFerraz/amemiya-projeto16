@@ -27,7 +27,7 @@ def debug_supabase():
 
 
 # ---------------------------------------------------------
-# CONFIGURAR STATIC (para imagens)
+# STATIC FILES (IMAGENS)
 # ---------------------------------------------------------
 STATIC_DIR = "app/static"
 os.makedirs(STATIC_DIR, exist_ok=True)
@@ -43,8 +43,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://amemiya-frontend-karol.onrender.com",   # certo
-        "https://amemiya-projeto-autogest.onrender.com", # opcional
+        "https://amemiya-frontend-karol.onrender.com",
+        "https://amemiya-projeto-autogest.onrender.com",
         "*"
     ],
     allow_credentials=True,
@@ -63,7 +63,9 @@ app.include_router(usuarios_router)
 app.include_router(alerta_router)
 
 
+# ---------------------------------------------------------
+# ROTA RAIZ
+# ---------------------------------------------------------
 @app.get("/")
 def root():
-
-
+    return {"status": "Backend funcionando no Render!"}
