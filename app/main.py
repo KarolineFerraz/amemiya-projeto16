@@ -1,5 +1,7 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.auth import router as auth_router
 from app.instrumentos import router as instrumentos_router
@@ -25,6 +27,15 @@ def debug_supabase():
 
 
 # ---------------------------------------------------------
+# CONFIGURAR STATIC (para imagens)
+# ---------------------------------------------------------
+STATIC_DIR = "app/static"
+os.makedirs(STATIC_DIR, exist_ok=True)
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+# ---------------------------------------------------------
 # CORS
 # ---------------------------------------------------------
 app.add_middleware(
@@ -32,12 +43,15 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://amemiya-projeto-autogest.onrender.com"
+        "https://amemiya-frontend-karol.onrender.com",   # certo
+        "https://amemiya-projeto-autogest.onrender.com", # opcional
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # ---------------------------------------------------------
 # ROTAS
@@ -51,4 +65,5 @@ app.include_router(alerta_router)
 
 @app.get("/")
 def root():
-    return {"status": "Backend funcionando no Render!"}
+
+
